@@ -1,0 +1,62 @@
+package pkg12f456_server;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Main 
+{
+
+    public static void main(String[] args)
+    {
+        mainServer ms=new mainServer();
+        ms.start();
+    }
+}
+
+class mainServer extends Thread
+{
+    public void run()
+    {
+        try{
+            ServerSocket ss=new ServerSocket(6758);
+            System.out.println("Server running");
+            
+            while(true)
+            {
+                Socket st=ss.accept();
+                
+                //read clien data
+                DataInputStream dis=new DataInputStream(st.getInputStream());
+                int m1=dis.readInt();
+                int m2=dis.readInt();
+                int m3=dis.readInt();
+                
+                //display
+                System.out.println("Marks 1 receivd="+m1);
+                System.out.println("Marks 2 receivd="+m2);
+                System.out.println("Marks 3 receivd="+m3);
+                
+                //do the calculations
+                int avg=(m1+m2+m3)/3;
+                String grade="";
+                if(avg>=70)
+                {
+                    grade="Pass";
+                }
+                else
+                    grade="Fail";
+                
+                //send the reuslts
+                DataOutputStream dos=new DataOutputStream(st.getOutputStream());
+                dos.writeInt(avg);
+                dos.writeUTF(grade);
+                
+            }
+         }
+        catch(Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+}
